@@ -7,27 +7,16 @@ import CreateArea from "./CreateArea";
 function App() {
   const [notes, setNotes] = useState([]);
 
-  function capitalizeFirst(a) {
-    return a[0].toUpperCase() + a.slice(1);
+  function addNote(newNote) {
+    setNotes(prevNotes => {
+      return [...prevNotes, newNote];
+    });
   }
 
-  function addItem(a, b) {
-    a = capitalizeFirst(a);
-    b = capitalizeFirst(b);
-    setNotes((prev) => [
-      ...prev,
-      {
-        title: a,
-        content: b
-      }
-    ]);
-  }
-
-  function deleteItem(id) {
-    console.log(id);
-    setNotes((prev) => {
-      return prev.filter((item, index) => {
-        return id !== index;
+  function deleteNote(id) {
+    setNotes(prevNotes => {
+      return prevNotes.filter((noteItem, index) => {
+        return index !== id;
       });
     });
   }
@@ -35,16 +24,18 @@ function App() {
   return (
     <div>
       <Header />
-      <CreateArea addItem={addItem} />
-      {notes.map((note, index) => (
-        <Note
-          key={index}
-          id={index}
-          deleteItem={deleteItem}
-          title={note.title}
-          content={note.content}
-        />
-      ))}
+      <CreateArea onAdd={addNote} />
+      {notes.map((noteItem, index) => {
+        return (
+          <Note
+            key={index}
+            id={index}
+            title={noteItem.title}
+            content={noteItem.content}
+            onDelete={deleteNote}
+          />
+        );
+      })}
       <Footer />
     </div>
   );
